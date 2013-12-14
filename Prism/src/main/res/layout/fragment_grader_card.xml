@@ -10,13 +10,14 @@
             android:layout_height="match_parent"
             android:background="@drawable/card_border">
 
-        <TextView
+        <com.phyous.prism.widget.TypefacedTextView
                 android:text="@string/hello_world"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:textSize="30sp"
+                app:typeface="fonts/Roboto-Regular.ttf"
                 />
-        <!--app:typeface="fonts/Roboto-Regular.ttf"-->
+
     </RelativeLayout>
 
 

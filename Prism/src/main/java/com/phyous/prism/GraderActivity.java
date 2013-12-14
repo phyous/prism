@@ -1,5 +1,6 @@
 package com.phyous.prism;
 
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
