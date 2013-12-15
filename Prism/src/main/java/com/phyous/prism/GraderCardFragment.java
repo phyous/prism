@@ -6,15 +6,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class GraderCardFragment extends Fragment {
+import com.phyous.prism.widget.TypefacedTextView;
 
-    public GraderCardFragment() {
+public class GraderCardFragment extends Fragment {
+    private final String mTitle;
+
+    public GraderCardFragment(String title) {
+        mTitle = title;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_grader_card, container, false);
+        TypefacedTextView tv = (TypefacedTextView) rootView.findViewById(R.id.title);
+        tv.setText(mTitle);
+
         return rootView;
     }
 }
