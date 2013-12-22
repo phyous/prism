@@ -1,30 +1,67 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:paddingLeft="@dimen/activity_horizontal_margin"
-              android:paddingRight="@dimen/activity_horizontal_margin"
-              android:paddingTop="@dimen/activity_vertical_margin"
-              android:paddingBottom="@dimen/activity_vertical_margin"
-              android:orientation="vertical"
-              android:background="@color/background_grey"
-              tools:context=".MainActivity$PlaceholderFragment">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:background="@color/background_grey"
+                tools:context=".GraderActivity">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                 xmlns:tools="http://schemas.android.com/tools"
-                 android:id="@+id/plus"
-                 android:layout_width="match_parent"
-                 android:layout_height="0dp"
-                 android:layout_weight="1"
-                 tools:context=".MainActivity"
-                 tools:ignore="MergeRootFrame"/>
+    <RelativeLayout
+            android:id="@+id/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                 xmlns:tools="http://schemas.android.com/tools"
-                 android:id="@+id/minus"
-                 android:layout_width="match_parent"
-                 android:layout_height="0dp"
-                 android:layout_weight="1"
-                 tools:context=".MainActivity"
-                 tools:ignore="MergeRootFrame"/>
-</LinearLayout>
+        <com.phyous.prism.widget.TypefacedTextView
+                android:id="@+id/date_title"
+                android:text="Date Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:paddingBottom="4dp"
+                app:typeface="fonts/Roboto-Bold.ttf"
+                />
+
+        <ImageView
+                android:id="@+id/arrow_icon"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/arrow"/>
+
+
+    </RelativeLayout>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/title_bar">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                         xmlns:tools="http://schemas.android.com/tools"
+                         android:id="@+id/start"
+                         android:layout_width="match_parent"
+                         android:layout_height="250dp"
+                         android:layout_weight="1"
+                         tools:layout="@android:layout/fragment_grader_card"/>
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                         xmlns:tools="http://schemas.android.com/tools"
+                         android:id="@+id/stop"
+                         android:layout_width="match_parent"
+                         android:layout_height="250dp"
+                         android:layout_weight="1"
+                         tools:layout="@android:layout/fragment_grader_card"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
