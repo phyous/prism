@@ -10,7 +10,16 @@ public class DateHelper {
     Inspired by:
     http://developer.android.com/reference/java/util/GregorianCalendar.html
      */
-    public static String getDateTitle(Date d){
-        return new SimpleDateFormat("EE, MMM d").format(d);
+    public static String getDateTitle(Date date) {
+        return new SimpleDateFormat("EE, MMM d").format(date);
+    }
+
+    public static String getDateTitle(long dateMillis) {
+        Date date = new Date(dateMillis);
+        return new SimpleDateFormat("EE, MMM d").format(date);
+    }
+
+    public static long getDateLong(Date d) {
+        return d.getTime();
     }
 }

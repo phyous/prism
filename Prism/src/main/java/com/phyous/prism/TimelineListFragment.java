@@ -1,23 +1,26 @@
 package com.phyous.prism;
 
-import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.phyous.prism.provider.Entry;
+import com.phyous.prism.provider.EntryDataSource;
 
 public class TimelineListFragment extends Fragment {
+    private EntryDataSource mEntryDataSource;
+    private EntryListAdapter mEntryListAdapter;
+    private ListView mListView;
+    private static final int NEW_ENTRY_REQUEST_CODE = 1;
 
     public TimelineListFragment() {
     }
@@ -36,22 +39,22 @@ public class TimelineListFragment extends Fragment {
             }
         });
 
-        final ListView listview = (ListView) rootView.findViewById(R.id.listview);
-        String[] values = new String[]{"Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-                "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-                "Android", "iPhone", "WindowsMobile"};
+        mListView = (ListView) rootView.findViewById(R.id.listview);
+        mEntryDataSource = new EntryDataSource(getActivity());
+        new AsyncTask<Object, Object, Cursor>() {
+            @Override
+            protected Cursor doInBackground(Object[] params) {
+                return mEntryDataSource.getAllEntries();
+            }
 
-        final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
-        final StableArrayAdapter adapter = new StableArrayAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, list);
-        listview.setAdapter(adapter);
+            @Override
+            protected void onPostExecute(Cursor result) {
+                mEntryListAdapter = new EntryListAdapter(getActivity(), result);
+                mListView.setAdapter(mEntryListAdapter);
+            }
+        }.execute();
 
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
@@ -64,28 +67,19 @@ public class TimelineListFragment extends Fragment {
         return rootView;
     }
 
-    private class StableArrayAdapter extends ArrayAdapter<String> {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+        if (requestCode == NEW_ENTRY_REQUEST_CODE && resultCode == GraderActivity.RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            final long date = bundle.getLong(GraderActivity.ENTRY_DATE);
+            final String[] stopEntries = bundle.getStringArray(GraderActivity.ENTRY_STOP_ARRAY);
+            final String[] startEntries = bundle.getStringArray(GraderActivity.ENTRY_START_ARRAY);
+            final Entry entry = new Entry(date, stopEntries, startEntries);
 
-        public StableArrayAdapter(Context context, int textViewResourceId,
-                List<String> objects) {
-            super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
+            mEntryDataSource.createEntry(entry);
+            mEntryListAdapter.changeCursor(mEntryDataSource.getAllEntries());
         }
-
-        @Override
-        public long getItemId(int position) {
-            String item = getItem(position);
-            return mIdMap.get(item);
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
     }
 }
