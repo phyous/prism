@@ -11,11 +11,14 @@ import android.widget.TextView;
 
 import com.phyous.prism.util.DateHelper;
 
-import java.util.Date;
+import static com.phyous.prism.util.DateHelper.getCurrentDateStartLong;
 
 public class GraderActivity extends ActionBarActivity {
     GraderCardFragment mStartFragment;
     GraderCardFragment mStopFragment;
+    private long mGraderTimeMillis;
+    private String[] mStartTextArray;
+    private String[] mStopTextArray;
     public static final String ENTRY_STOP_ARRAY = "entry_stop_array";
     public static final String ENTRY_START_ARRAY = "entry_start_array";
     public static final String ENTRY_DATE = "entry_date";
@@ -26,8 +29,20 @@ public class GraderActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grader);
 
-        mStartFragment = new GraderCardFragment("Start");
-        mStopFragment = new GraderCardFragment("Stop");
+        Bundle extras = getIntent().getExtras();
+        long entryDate = extras == null ? 0L : extras.getLong(ENTRY_DATE, 0L);
+        if (entryDate == 0) {
+            mGraderTimeMillis = getCurrentDateStartLong();
+            mStartTextArray = new String[0];
+            mStopTextArray = new String[0];
+        } else {
+            mGraderTimeMillis = entryDate;
+            mStartTextArray = extras.getStringArray(ENTRY_START_ARRAY);
+            mStopTextArray = extras.getStringArray(ENTRY_STOP_ARRAY);
+        }
+
+        mStartFragment = new GraderCardFragment("Start", mStartTextArray);
+        mStopFragment = new GraderCardFragment("Stop", mStopTextArray);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -36,7 +51,7 @@ public class GraderActivity extends ActionBarActivity {
                     .commit();
         }
 
-        final String dateText = DateHelper.getDateTitle(new Date(2013, 11, 14));
+        final String dateText = DateHelper.getDateTitle(mGraderTimeMillis);
         TextView dateTitle = (TextView) findViewById(R.id.date_title);
         dateTitle.setText(dateText);
 
@@ -47,10 +62,9 @@ public class GraderActivity extends ActionBarActivity {
                 Intent intent = new Intent(GraderActivity.this, TimelineActivity.class);
                 String[] startFeedback = getFeedbacksFromFragment(mStartFragment);
                 String[] stopFeedback = getFeedbacksFromFragment(mStopFragment);
-                long date = DateHelper.getDateLong(new Date(2013, 11, 14));
                 intent.putExtra(ENTRY_STOP_ARRAY, stopFeedback);
                 intent.putExtra(ENTRY_START_ARRAY, startFeedback);
-                intent.putExtra(ENTRY_DATE, date);
+                intent.putExtra(ENTRY_DATE, mGraderTimeMillis);
 
                 GraderActivity.this.setResult(RESULT_OK, intent);
 

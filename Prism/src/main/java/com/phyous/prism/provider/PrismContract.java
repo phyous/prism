@@ -2,9 +2,6 @@ package com.phyous.prism.provider;
 
 import android.provider.BaseColumns;
 
-/**
- * Created by pyoussef on 12/22/13.
- */
 public class PrismContract {
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
@@ -13,7 +10,7 @@ public class PrismContract {
     private static final String SQL_CREATE_ENTRY_TABLE =
             "CREATE TABLE " + Entry.TABLE_NAME + " (" +
                     Entry._ID + " INTEGER PRIMARY KEY," +
-                    Entry.COLUMN_NAME_DATE + INTEGER_TYPE +
+                    Entry.COLUMN_NAME_DATE + INTEGER_TYPE +" NOT NULL UNIQUE" +
                     " )";
     private static final String SQL_DELETE_ENTRY_TABLE =
             "DROP TABLE IF EXISTS " + Entry.TABLE_NAME;

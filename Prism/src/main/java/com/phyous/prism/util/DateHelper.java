@@ -19,7 +19,17 @@ public class DateHelper {
         return new SimpleDateFormat("EE, MMM d").format(date);
     }
 
-    public static long getDateLong(Date d) {
-        return d.getTime();
+    /**
+     * Get the long representation of the beginning of the current date
+     * @return current date in system time
+     */
+    public static long getCurrentDateStartLong() {
+        final Date currentDate = new Date(System.currentTimeMillis());
+        final Date currentDateBeginning = new Date(
+                currentDate.getYear(),
+                currentDate.getMonth(),
+                currentDate.getDay());
+
+        return currentDateBeginning.getTime();
     }
 }

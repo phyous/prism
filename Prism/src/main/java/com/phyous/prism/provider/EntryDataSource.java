@@ -32,7 +32,25 @@ public class EntryDataSource {
         return PrismDbHelper.getDb(mContext);
     }
 
-    public void createEntry(Entry model) {
+    public void createOrUpdateEntry(Entry model) {
+        Cursor cursor = getCursorByField(PrismContract.Entry.COLUMN_NAME_DATE,
+                String.valueOf(model.getDate()));
+        int numExistingEntries = cursor.getCount();
+        if (numExistingEntries > 0) {
+            long id = cursor.getLong(0);
+            model.setId(id);
+            updateEntry(model);
+        } else {
+            createEntry(model);
+        }
+    }
+
+    private void updateEntry(Entry model) {
+        updateFeedbackValues(0, model.getId(), model.getNegatives());
+        updateFeedbackValues(1, model.getId(), model.getPositives());
+    }
+
+    private void createEntry(Entry model) {
         ContentValues entryValues = new ContentValues();
         entryValues.put(PrismContract.Entry.COLUMN_NAME_DATE, model.getDate());
 
@@ -52,24 +70,15 @@ public class EntryDataSource {
     }
 
     /**
-     * Gets full representation of an entry (along with associated Feedbacks).
-     * @param date the date for which we will fetch an entry.
+     * Gets full representation of an entry (along with associated Feedbacks) by id.
+     *
+     * @param id the entry_id for which we will fetch an entry.
      * @return
      */
-    public Entry getFullEntry(long date) {
+    public Entry getEntryById(long id) {
         Entry entry = null;
 
-        final String selection = "date=?";
-        final String[] selectionArgs = new String[] {String.valueOf(date)};
-        Cursor cursor = db().query(
-                PrismContract.Entry.TABLE_NAME,
-                entryAllColumns,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
+        Cursor cursor = getCursorByField(PrismContract.Entry._ID, String.valueOf(id));
 
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -80,13 +89,29 @@ public class EntryDataSource {
         return entry;
     }
 
+    private Cursor getCursorByField(String field, String value) {
+        final String selection = field+"=?";
+        final String[] selectionArgs = new String[]{value};
+        Cursor cursor = db().query(
+                PrismContract.Entry.TABLE_NAME,
+                entryAllColumns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        cursor.moveToFirst();
+        return cursor;
+    }
+
     private Entry cursorToEntry(Cursor cursor, boolean deepRetrieval) {
         long id = cursor.getLong(0);
         long date = cursor.getLong(1);
         String[] negatives = null;
         String[] positives = null;
 
-        if(deepRetrieval) {
+        if (deepRetrieval) {
             negatives = getFeedback(0, id);
             positives = getFeedback(1, id);
         }
@@ -97,7 +122,7 @@ public class EntryDataSource {
         ArrayList<String> feedbacks = new ArrayList<String>();
 
         final String selection = "entry_id=? AND feedback_type=?";
-        final String[] selectionArgs = new String[] {String.valueOf(entryId), String.valueOf(type)};
+        final String[] selectionArgs = new String[]{String.valueOf(entryId), String.valueOf(type)};
         Cursor cursor = db().query(
                 PrismContract.Feedback.TABLE_NAME,
                 feedbackAllColumns,
@@ -138,5 +163,32 @@ public class EntryDataSource {
                     null,
                     feedbackValues);
         }
+    }
+
+    private void deleteFeedbackValues(long type, long entryId) {
+        final String selection = "entry_id=? AND feedback_type=?";
+        final String[] selectionArgs = new String[]{String.valueOf(entryId), String.valueOf(type)};
+        Cursor cursor = db().query(
+                PrismContract.Feedback.TABLE_NAME,
+                feedbackAllColumns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            String id = String.valueOf(cursor.getLong(0));
+            db().delete(PrismContract.Feedback.TABLE_NAME, "_id=?", new String[]{id});
+            cursor.moveToNext();
+        }
+        cursor.close();
+    }
+
+    private void updateFeedbackValues(long type, long entryId, String[] values) {
+        deleteFeedbackValues(type, entryId);
+        createFeedbackValues(type, entryId, values);
     }
 }

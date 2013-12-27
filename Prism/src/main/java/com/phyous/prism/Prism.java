@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.res.Configuration;
 
 import com.phyous.prism.provider.PrismDbHelper;
-import com.phyous.prism.util.DbDumper;
 
 public class Prism extends Application {
 
@@ -18,7 +17,6 @@ public class Prism extends Application {
         super.onCreate();
 
         // Initialize database
-        //DbDumper.dump();
         PrismDbHelper.getDb(this);
     }
 

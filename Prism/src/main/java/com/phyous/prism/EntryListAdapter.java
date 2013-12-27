@@ -29,7 +29,7 @@ public class EntryListAdapter extends CursorAdapter {
         final String dateFormatted = getDateTitle(cursor.getLong(1));
 
         tv1.setText(dateFormatted);
-        tv2.setText("Some Summary....");
+        tv2.setText("Some Summary.... REPLACE!");
     }
 
 
