@@ -8,11 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.phyous.prism.provider.Entry;
+import com.phyous.prism.provider.EntryDataSource;
+
 import static com.phyous.prism.util.DateHelper.getDateTitle;
 
 public class EntryListAdapter extends CursorAdapter {
+    private final int STRING_SUMMARY_LENGTH = 18;
+    private EntryDataSource mEntryDataSource;
     public EntryListAdapter(Context context, Cursor c) {
         super(context, c);
+        mEntryDataSource = new EntryDataSource(context);
     }
 
     @Override
@@ -26,10 +32,21 @@ public class EntryListAdapter extends CursorAdapter {
         TextView tv1 = (TextView) view.findViewById(R.id.entry_date);
         TextView tv2 = (TextView) view.findViewById(R.id.entry_summary);
 
-        final String dateFormatted = getDateTitle(cursor.getLong(1));
+        long id = cursor.getLong(0);
+        long date = cursor.getLong(1);
+
+        final String dateFormatted = getDateTitle(date);
+        Entry entry =  mEntryDataSource.getEntryById(id);
+        StringBuilder sb = new StringBuilder();
+        for(String s: entry.getNegatives()) {
+            sb.append(s);
+            sb.append(", ");
+        }
+        int maxLength = sb.length() > STRING_SUMMARY_LENGTH ? STRING_SUMMARY_LENGTH : sb.length();
+        String summary = sb.toString().substring(0, maxLength) + "...";
 
         tv1.setText(dateFormatted);
-        tv2.setText("Some Summary.... REPLACE!");
+        tv2.setText(summary);
     }
 
 

@@ -11,11 +11,11 @@
 
     <com.phyous.prism.widget.TypefacedTextView
             android:id="@+id/title"
-            android:text="Title Text"
+            android:text="@string/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="30sp"
-            android:paddingTop="12dp"
+            android:paddingTop="6dp"
             app:typeface="fonts/Roboto-Light.ttf"
             />
 

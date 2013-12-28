@@ -15,7 +15,7 @@ public class DateHelper {
     }
 
     public static String getDateTitle(long dateMillis) {
-        Date date = new Date(dateMillis);
+        final Date date = new Date(dateMillis);
         return new SimpleDateFormat("EE, MMM d").format(date);
     }
 
@@ -28,7 +28,7 @@ public class DateHelper {
         final Date currentDateBeginning = new Date(
                 currentDate.getYear(),
                 currentDate.getMonth(),
-                currentDate.getDay());
+                currentDate.getDate());
 
         return currentDateBeginning.getTime();
     }
