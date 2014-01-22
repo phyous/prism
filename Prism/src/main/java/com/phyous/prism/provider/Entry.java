@@ -5,15 +5,17 @@ public class Entry {
     private long mDate;
     private String[] mPositives;
     private String[] mNegatives;
+    private String[] mNext;
 
-    public Entry(long date, String[] negatives, String[] positives) {
+    public Entry(long date, String[] negatives, String[] positives, String[] next) {
         mDate = date;
         mPositives = positives;
         mNegatives = negatives;
+        mNext = next;
     }
 
-    public Entry(long date, String[] negatives, String[] positives, long id) {
-        this(date, negatives, positives);
+    public Entry(long date, String[] negatives, String[] positives, String[] next, long id) {
+        this(date, negatives, positives, next);
         mId = id;
     }
 
@@ -35,5 +37,9 @@ public class Entry {
 
     public String[] getNegatives() {
         return mNegatives;
+    }
+
+    public String[] getNext() {
+        return mNext;
     }
 }

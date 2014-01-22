@@ -48,6 +48,7 @@ public class EntryDataSource {
     private void updateEntry(Entry model) {
         updateFeedbackValues(0, model.getId(), model.getNegatives());
         updateFeedbackValues(1, model.getId(), model.getPositives());
+        updateFeedbackValues(2, model.getId(), model.getNext());
     }
 
     private void createEntry(Entry model) {
@@ -61,6 +62,7 @@ public class EntryDataSource {
 
         createFeedbackValues(0, newEntryRowId, model.getNegatives());
         createFeedbackValues(1, newEntryRowId, model.getPositives());
+        createFeedbackValues(2, newEntryRowId, model.getNext());
     }
 
     public Cursor getAllEntries() {
@@ -110,12 +112,14 @@ public class EntryDataSource {
         long date = cursor.getLong(1);
         String[] negatives = null;
         String[] positives = null;
+        String[] next = null;
 
         if (deepRetrieval) {
             negatives = getFeedback(0, id);
             positives = getFeedback(1, id);
+            next = getFeedback(2, id);
         }
-        return new Entry(date, negatives, positives, id);
+        return new Entry(date, negatives, positives, next, id);
     }
 
     private String[] getFeedback(long type, long entryId) {

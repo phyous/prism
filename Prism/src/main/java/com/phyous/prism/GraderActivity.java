@@ -14,14 +14,21 @@ import com.phyous.prism.util.DateHelper;
 import static com.phyous.prism.util.DateHelper.getCurrentDateStartLong;
 
 public class GraderActivity extends ActionBarActivity {
-    GraderCardFragment mStartFragment;
-    GraderCardFragment mStopFragment;
+    GraderCardFragment mPosFragment;
+    GraderCardFragment mNegFragment;
+    GraderCardFragment mNextFragment;
     private long mGraderTimeMillis;
-    private String[] mStartTextArray;
-    private String[] mStopTextArray;
-    public static final String ENTRY_STOP_ARRAY = "entry_stop_array";
-    public static final String ENTRY_START_ARRAY = "entry_start_array";
+    private String[] mPosTextArray;
+    private String[] mNegTextArray;
+    private String[] mNextTextArray;
+    public static final String ENTRY_POS_ARRAY = "entry_pos_array";
+    public static final String ENTRY_NEG_ARRAY = "entry_neg_array";
+    public static final String ENTRY_NEXT_ARRAY = "entry_next_array";
     public static final String ENTRY_DATE = "entry_date";
+
+    public GraderActivity() {
+        super();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,21 +40,25 @@ public class GraderActivity extends ActionBarActivity {
         long entryDate = extras == null ? 0L : extras.getLong(ENTRY_DATE, 0L);
         if (entryDate == 0) {
             mGraderTimeMillis = getCurrentDateStartLong();
-            mStartTextArray = new String[0];
-            mStopTextArray = new String[0];
+            mPosTextArray = new String[0];
+            mNegTextArray = new String[0];
+            mNextTextArray = new String[0];
         } else {
             mGraderTimeMillis = entryDate;
-            mStartTextArray = extras.getStringArray(ENTRY_START_ARRAY);
-            mStopTextArray = extras.getStringArray(ENTRY_STOP_ARRAY);
+            mPosTextArray = extras.getStringArray(ENTRY_NEG_ARRAY);
+            mNegTextArray = extras.getStringArray(ENTRY_POS_ARRAY);
+            mNextTextArray = extras.getStringArray(ENTRY_NEXT_ARRAY);
         }
 
-        mStartFragment = new GraderCardFragment("Start", mStartTextArray);
-        mStopFragment = new GraderCardFragment("Stop", mStopTextArray);
+        mPosFragment = new GraderCardFragment("Praise", mPosTextArray, R.color.green_plus);
+        mNegFragment = new GraderCardFragment("Improve", mNegTextArray, R.color.red_minus);
+        mNextFragment = new GraderCardFragment("Focus", mNextTextArray, R.color.yellow_next);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.start, mStartFragment)
-                    .add(R.id.stop, mStopFragment)
+                    .add(R.id.praise, mPosFragment)
+                    .add(R.id.improve, mNegFragment)
+                    .add(R.id.focus, mNextFragment)
                     .commit();
         }
 
@@ -60,10 +71,12 @@ public class GraderActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GraderActivity.this, TimelineActivity.class);
-                String[] startFeedback = getFeedbacksFromFragment(mStartFragment);
-                String[] stopFeedback = getFeedbacksFromFragment(mStopFragment);
-                intent.putExtra(ENTRY_STOP_ARRAY, stopFeedback);
-                intent.putExtra(ENTRY_START_ARRAY, startFeedback);
+                String[] posFeedback = getFeedbackFromFragment(mPosFragment);
+                String[] negFeedback = getFeedbackFromFragment(mNegFragment);
+                String[] nextFeedback = getFeedbackFromFragment(mNextFragment);
+                intent.putExtra(ENTRY_POS_ARRAY, posFeedback);
+                intent.putExtra(ENTRY_NEG_ARRAY, negFeedback);
+                intent.putExtra(ENTRY_NEXT_ARRAY, nextFeedback);
                 intent.putExtra(ENTRY_DATE, mGraderTimeMillis);
 
                 GraderActivity.this.setResult(RESULT_OK, intent);
@@ -73,7 +86,7 @@ public class GraderActivity extends ActionBarActivity {
         });
     }
 
-    private String[] getFeedbacksFromFragment(GraderCardFragment fragment) {
+    private String[] getFeedbackFromFragment(GraderCardFragment fragment) {
         EditText editText = (EditText) fragment.getView().findViewById(R.id.text_entry);
         String rawFeedbackText = editText.getText().toString();
         String[] splits = rawFeedbackText.split("\n");

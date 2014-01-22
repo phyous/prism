@@ -10,6 +10,7 @@
                 tools:context=".GraderCardFragment">
 
     <RelativeLayout
+            android:id="@+id/inner_box"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/card_border">

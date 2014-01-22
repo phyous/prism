@@ -60,8 +60,9 @@ public class TimelineActivity extends ActionBarActivity {
                 Intent intent = new Intent(TimelineActivity.this, GraderActivity.class);
                 final Entry entry = mEntryDataSource.getEntryById(id);
                 intent.putExtra(GraderActivity.ENTRY_DATE, entry.getDate());
-                intent.putExtra(GraderActivity.ENTRY_STOP_ARRAY, entry.getNegatives());
-                intent.putExtra(GraderActivity.ENTRY_START_ARRAY, entry.getPositives());
+                intent.putExtra(GraderActivity.ENTRY_POS_ARRAY, entry.getNegatives());
+                intent.putExtra(GraderActivity.ENTRY_NEG_ARRAY, entry.getPositives());
+                intent.putExtra(GraderActivity.ENTRY_NEXT_ARRAY, entry.getNext());
 
                 startActivityForResult(intent, NEW_ENTRY_REQUEST_CODE);
             }
@@ -75,9 +76,10 @@ public class TimelineActivity extends ActionBarActivity {
         if (requestCode == NEW_ENTRY_REQUEST_CODE && resultCode == GraderActivity.RESULT_OK) {
             Bundle bundle = data.getExtras();
             final long date = bundle.getLong(GraderActivity.ENTRY_DATE);
-            final String[] stopEntries = bundle.getStringArray(GraderActivity.ENTRY_STOP_ARRAY);
-            final String[] startEntries = bundle.getStringArray(GraderActivity.ENTRY_START_ARRAY);
-            final Entry entry = new Entry(date, stopEntries, startEntries);
+            final String[] negEntries = bundle.getStringArray(GraderActivity.ENTRY_NEG_ARRAY);
+            final String[] posEntries = bundle.getStringArray(GraderActivity.ENTRY_POS_ARRAY);
+            final String[] nextEntries = bundle.getStringArray(GraderActivity.ENTRY_NEXT_ARRAY);
+            final Entry entry = new Entry(date, negEntries, posEntries, nextEntries);
 
             mEntryDataSource.createOrUpdateEntry(entry);
             mEntryListAdapter.changeCursor(mEntryDataSource.getAllEntries());

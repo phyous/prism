@@ -49,17 +49,23 @@
 
             <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                          xmlns:tools="http://schemas.android.com/tools"
-                         android:id="@+id/start"
+                         android:id="@+id/praise"
                          android:layout_width="match_parent"
-                         android:layout_height="250dp"
+                         android:layout_height="wrap_content"
                          android:layout_weight="1"
                          tools:layout="@android:layout/fragment_grader_card"/>
-
             <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                          xmlns:tools="http://schemas.android.com/tools"
-                         android:id="@+id/stop"
+                         android:id="@+id/improve"
                          android:layout_width="match_parent"
-                         android:layout_height="250dp"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="1"
+                         tools:layout="@android:layout/fragment_grader_card"/>
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                         xmlns:tools="http://schemas.android.com/tools"
+                         android:id="@+id/focus"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
                          android:layout_weight="1"
                          tools:layout="@android:layout/fragment_grader_card"/>
         </LinearLayout>

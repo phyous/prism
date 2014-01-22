@@ -37,6 +37,13 @@ public class EntryListAdapter extends CursorAdapter {
 
         final String dateFormatted = getDateTitle(date);
         Entry entry =  mEntryDataSource.getEntryById(id);
+        String summary = createSummary(entry);
+
+        tv1.setText(dateFormatted);
+        tv2.setText(summary);
+    }
+
+    private String createSummary(Entry entry) {
         StringBuilder sb = new StringBuilder();
         for(String s: entry.getNegatives()) {
             sb.append(s);
@@ -44,9 +51,7 @@ public class EntryListAdapter extends CursorAdapter {
         }
         int maxLength = sb.length() > STRING_SUMMARY_LENGTH ? STRING_SUMMARY_LENGTH : sb.length();
         String summary = sb.toString().substring(0, maxLength) + "...";
-
-        tv1.setText(dateFormatted);
-        tv2.setText(summary);
+        return summary;
     }
 
 
