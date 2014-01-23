@@ -2,6 +2,8 @@ package com.phyous.prism;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -51,10 +53,9 @@ public class GraderCardFragment extends Fragment {
         EditText editText = (EditText) rootView.findViewById(R.id.text_entry);
         editText.setText(arrayToString(mInitialText));
 
-        // TODO: Figure out how to change color
         RelativeLayout innerBox = (RelativeLayout) rootView.findViewById(R.id.inner_box);
-        Drawable layoutBG = innerBox.getBackground();
-        //layoutBG.mutate().setColorFilter(mColor, PorterDuff.Mode.MULTIPLY);
+        GradientDrawable layoutBG = (GradientDrawable) innerBox.getBackground();
+        layoutBG.setColor(getResources().getColor(mColor));
 
         return rootView;
     }

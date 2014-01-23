@@ -36,7 +36,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:background="@color/background_grey"
+                android:background="@color/dark_grey"
                 />
 
         <EditText
