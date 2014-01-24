@@ -81,7 +81,6 @@ public class GraderActivity extends ActionBarActivity {
                 intent.putExtra(ENTRY_DATE, mGraderTimeMillis);
 
                 GraderActivity.this.setResult(RESULT_OK, intent);
-
                 finish();
             }
         });

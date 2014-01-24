@@ -30,10 +30,11 @@ public class PrismDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        for(String sql: PrismContract.getPrismDeleteSQLs()) {
-            db.execSQL(sql);
-        }
-        onCreate(db);
+        // TODO: Add proper upgrade code when necessary
+//        for(String sql: PrismContract.getPrismDeleteSQLs()) {
+//            db.execSQL(sql);
+//        }
+//        onCreate(db);
     }
 
     @Override

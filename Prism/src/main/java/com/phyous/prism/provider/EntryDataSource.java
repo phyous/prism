@@ -67,7 +67,6 @@ public class EntryDataSource {
 
     public Cursor getAllEntries() {
         String buildSQL = "SELECT * FROM " + PrismContract.Entry.TABLE_NAME;
-
         return db().rawQuery(buildSQL, null);
     }
 
@@ -79,7 +78,6 @@ public class EntryDataSource {
      */
     public Entry getEntryById(long id) {
         Entry entry = null;
-
         Cursor cursor = getCursorByField(PrismContract.Entry._ID, String.valueOf(id));
 
         cursor.moveToFirst();

@@ -36,7 +36,7 @@ public class TimelineActivity extends ActionBarActivity {
             }
         });
 
-        // Set data for listview
+        // Set data for ListView
         mListView = (ListView) findViewById(R.id.listview);
         mEntryDataSource = new EntryDataSource(this);
         new AsyncTask<Object, Object, Cursor>() {
