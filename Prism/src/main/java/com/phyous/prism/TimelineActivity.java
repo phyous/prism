@@ -14,11 +14,15 @@ import android.widget.ListView;
 
 import com.phyous.prism.provider.Entry;
 import com.phyous.prism.provider.EntryDataSource;
+import com.phyous.prism.service.ScheduleClient;
+
+import java.util.Calendar;
 
 public class TimelineActivity extends ActionBarActivity {
     private EntryDataSource mEntryDataSource;
     private EntryListAdapter mEntryListAdapter;
     private ListView mListView;
+    private ScheduleClient scheduleClient;
     private static final int NEW_ENTRY_REQUEST_CODE = 1;
 
     @Override
@@ -26,11 +30,17 @@ public class TimelineActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
+        // Create a new service client and bind our activity to this service
+        scheduleClient = new ScheduleClient(this);
+        scheduleClient.doBindService();
+
         // Enable creating new entries
         final ImageView button = (ImageView) findViewById(R.id.plus_icon);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO: Move somewhere appropriate. App initialization?
+                setupAlarm();
                 Intent intent = new Intent(TimelineActivity.this, GraderActivity.class);
                 startActivityForResult(intent, NEW_ENTRY_REQUEST_CODE);
             }
@@ -70,6 +80,14 @@ public class TimelineActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onStop() {
+        if (scheduleClient != null) {
+            scheduleClient.doUnbindService();
+        }
+        super.onStop();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -99,5 +117,14 @@ public class TimelineActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setupAlarm() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 22);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+
+        scheduleClient.setAlarmForNotification(c);
     }
 }
