@@ -19,12 +19,14 @@ public class GraderActivity extends ActionBarActivity {
     GraderCardFragment mNegFragment;
     GraderCardFragment mNextFragment;
     private long mGraderTimeMillis;
-    private String[] mPosTextArray;
-    private String[] mNegTextArray;
-    private String[] mNextTextArray;
     public static final String ENTRY_POS_ARRAY = "entry_pos_array";
     public static final String ENTRY_NEG_ARRAY = "entry_neg_array";
     public static final String ENTRY_NEXT_ARRAY = "entry_next_array";
+
+    public static final String FRAGMENTID_POS_ARRAY = "PosFragment";
+    public static final String FRAGMENTID_NEG_ARRAY = "NegFragment";
+    public static final String FRAGMENTID_NEXT_ARRAY = "NextFragment";
+
     public static final String ENTRY_DATE = "entry_date";
 
     public GraderActivity() {
@@ -39,27 +41,37 @@ public class GraderActivity extends ActionBarActivity {
 
         Bundle extras = getIntent().getExtras();
         long entryDate = extras == null ? 0L : extras.getLong(ENTRY_DATE, 0L);
+        String[] posTextArray;
+        String[] negTextArray;
+        String[] nextTextArray;
         if (entryDate == 0) {
             mGraderTimeMillis = getCurrentDateStartLong();
-            mPosTextArray = new String[0];
-            mNegTextArray = new String[0];
-            mNextTextArray = new String[0];
+            posTextArray = new String[0];
+            negTextArray = new String[0];
+            nextTextArray = new String[0];
         } else {
             mGraderTimeMillis = entryDate;
-            mPosTextArray = extras.getStringArray(ENTRY_NEG_ARRAY);
-            mNegTextArray = extras.getStringArray(ENTRY_POS_ARRAY);
-            mNextTextArray = extras.getStringArray(ENTRY_NEXT_ARRAY);
+            posTextArray = extras.getStringArray(ENTRY_NEG_ARRAY);
+            negTextArray = extras.getStringArray(ENTRY_POS_ARRAY);
+            nextTextArray = extras.getStringArray(ENTRY_NEXT_ARRAY);
         }
 
-        mPosFragment = new GraderCardFragment("Praise", mPosTextArray, R.color.green_plus);
-        mNegFragment = new GraderCardFragment("Improve", mNegTextArray, R.color.red_minus);
-        mNextFragment = new GraderCardFragment("Focus", mNextTextArray, R.color.yellow_next);
+        if (savedInstanceState != null) {
+            mPosFragment = (GraderCardFragment)
+                    getSupportFragmentManager().findFragmentByTag(FRAGMENTID_POS_ARRAY);
+            mNegFragment = (GraderCardFragment)
+                    getSupportFragmentManager().findFragmentByTag(FRAGMENTID_NEG_ARRAY);
+            mNextFragment = (GraderCardFragment)
+                    getSupportFragmentManager().findFragmentByTag(FRAGMENTID_NEXT_ARRAY);
+        } else {
+            mPosFragment = new GraderCardFragment("Praise", posTextArray, R.color.green_plus);
+            mNegFragment = new GraderCardFragment("Improve", negTextArray, R.color.red_minus);
+            mNextFragment = new GraderCardFragment("Focus", nextTextArray, R.color.yellow_next);
 
-        if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.praise, mPosFragment)
-                    .add(R.id.improve, mNegFragment)
-                    .add(R.id.focus, mNextFragment)
+                    .add(R.id.praise, mPosFragment, FRAGMENTID_POS_ARRAY)
+                    .add(R.id.improve, mNegFragment, FRAGMENTID_NEG_ARRAY)
+                    .add(R.id.focus, mNextFragment, FRAGMENTID_NEXT_ARRAY)
                     .commit();
         }
 

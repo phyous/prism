@@ -49,18 +49,7 @@ public class TimelineActivity extends ActionBarActivity {
         // Set data for ListView
         mListView = (ListView) findViewById(R.id.listview);
         mEntryDataSource = new EntryDataSource(this);
-        new AsyncTask<Object, Object, Cursor>() {
-            @Override
-            protected Cursor doInBackground(Object[] params) {
-                return mEntryDataSource.getAllEntries();
-            }
-
-            @Override
-            protected void onPostExecute(Cursor result) {
-                mEntryListAdapter = new EntryListAdapter(TimelineActivity.this, result);
-                mListView.setAdapter(mEntryListAdapter);
-            }
-        }.execute();
+        updateData();
 
         // Enable editing of existing items
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,6 +66,25 @@ public class TimelineActivity extends ActionBarActivity {
                 startActivityForResult(intent, NEW_ENTRY_REQUEST_CODE);
             }
         });
+    }
+
+    private void updateData() {
+        new AsyncTask<Object, Object, Cursor>() {
+            @Override
+            protected Cursor doInBackground(Object[] params) {
+                return mEntryDataSource.getAllEntries();
+            }
+
+            @Override
+            protected void onPostExecute(Cursor result) {
+                if (mEntryListAdapter == null) {
+                    mEntryListAdapter = new EntryListAdapter(TimelineActivity.this, result);
+                    mListView.setAdapter(mEntryListAdapter);
+                } else {
+                    mEntryListAdapter.changeCursor(result);
+                }
+            }
+        }.execute();
     }
 
     @Override
@@ -100,7 +108,7 @@ public class TimelineActivity extends ActionBarActivity {
             final Entry entry = new Entry(date, negEntries, posEntries, nextEntries);
 
             mEntryDataSource.createOrUpdateEntry(entry);
-            mEntryListAdapter.changeCursor(mEntryDataSource.getAllEntries());
+            updateData();
         }
     }
 
