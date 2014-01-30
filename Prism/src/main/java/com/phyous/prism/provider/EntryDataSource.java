@@ -66,7 +66,12 @@ public class EntryDataSource {
     }
 
     public Cursor getAllEntries() {
-        String buildSQL = "SELECT * FROM " + PrismContract.Entry.TABLE_NAME;
+        String buildSQL =
+                "SELECT * FROM " +
+                PrismContract.Entry.TABLE_NAME +
+                " ORDER BY " +
+                PrismContract.Entry.COLUMN_NAME_DATE +
+                " DESC";
         return db().rawQuery(buildSQL, null);
     }
 
