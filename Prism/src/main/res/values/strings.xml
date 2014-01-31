@@ -6,4 +6,7 @@
     <string name="title_activity_timeline">TimelineActivity</string>
     <string name="title_activity_grader">GraderActivity</string>
     <string name="title_text">Prism</string>
+    <string name="praise_title">Praise</string>
+    <string name="improve_title">Improve</string>
+    <string name="focus_title">Focus</string>
 </resources>

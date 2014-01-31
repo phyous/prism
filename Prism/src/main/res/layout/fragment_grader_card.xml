@@ -39,8 +39,8 @@
                 android:background="@color/dark_grey"
                 />
 
-        <EditText
-                android:id="@+id/text_entry"
+        <ListView
+                android:id="@+id/text_entry_list"
                 android:layout_below="@+id/div_bar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>

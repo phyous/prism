@@ -64,9 +64,18 @@ public class GraderActivity extends ActionBarActivity {
             mNextFragment = (GraderCardFragment)
                     getSupportFragmentManager().findFragmentByTag(FRAGMENTID_NEXT_ARRAY);
         } else {
-            mPosFragment = new GraderCardFragment("Praise", posTextArray, R.color.green_plus);
-            mNegFragment = new GraderCardFragment("Improve", negTextArray, R.color.red_minus);
-            mNextFragment = new GraderCardFragment("Focus", nextTextArray, R.color.yellow_next);
+            mPosFragment = new GraderCardFragment(
+                    getString(R.string.praise_title),
+                    posTextArray,
+                    R.color.green_plus);
+            mNegFragment = new GraderCardFragment(
+                    getString(R.string.improve_title),
+                    negTextArray,
+                    R.color.red_minus);
+            mNextFragment = new GraderCardFragment(
+                    getString(R.string.focus_title),
+                    nextTextArray,
+                    R.color.yellow_next);
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.praise, mPosFragment, FRAGMENTID_POS_ARRAY)
