@@ -52,9 +52,12 @@ public class GraderCardFragment extends Fragment {
         tv.setText(mTitle);
 
         ListView listView = (ListView) rootView.findViewById(R.id.text_entry_list);
+        // TODO: Abstract this a bit
         mInitialText.add("");
-        ArrayAdapter <String> adapter = new ArrayAdapter<String>(getActivity(),
-                R.layout.grader_row_active, R.id.text_entry, mInitialText);
+        String[] entryArray = new String[mInitialText.size()];
+        EntryArrayAdapter adapter = new EntryArrayAdapter(
+                getActivity(),
+                mInitialText.toArray(entryArray));
         listView.setAdapter(adapter);
         updateListviewHeight(listView);
 
