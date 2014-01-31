@@ -15,12 +15,10 @@ import android.view.View.MeasureSpec;
 import com.phyous.prism.widget.TypefacedTextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class GraderCardFragment extends Fragment {
     private String mTitle;
-    private List<String> mInitialText;
+    private ArrayList<String> mInitialText;
     private int mColor;
 
     private static final String TITLE_INDEX = "title_index";
@@ -34,9 +32,9 @@ public class GraderCardFragment extends Fragment {
     }
 
 
-    public GraderCardFragment(String title, String[] initialText, int color) {
+    public GraderCardFragment(String title, ArrayList<String> initialText, int color) {
         mTitle = title;
-        mInitialText = new ArrayList<String>(Arrays.asList(initialText));
+        mInitialText = initialText;
         mColor = color;
     }
 
@@ -45,9 +43,7 @@ public class GraderCardFragment extends Fragment {
             Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             mTitle = savedInstanceState.getString(TITLE_INDEX);
-            List<String> tmpList =
-                    Arrays.asList(savedInstanceState.getStringArray(INITIAL_TEXT_INDEX));
-            mInitialText = new ArrayList<String>(tmpList);
+            mInitialText = savedInstanceState.getStringArrayList(INITIAL_TEXT_INDEX);
             mColor = savedInstanceState.getInt(COLOR_INDEX);
         }
 
@@ -73,8 +69,7 @@ public class GraderCardFragment extends Fragment {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString(TITLE_INDEX, mTitle);
-        String []tmpArray = new String[mInitialText.size()];
-        savedInstanceState.putStringArray(INITIAL_TEXT_INDEX, mInitialText.toArray(tmpArray));
+        savedInstanceState.putStringArrayList(INITIAL_TEXT_INDEX, mInitialText);
         savedInstanceState.putInt(COLOR_INDEX, mColor);
     }
 

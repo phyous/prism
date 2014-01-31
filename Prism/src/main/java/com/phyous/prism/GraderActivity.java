@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 import com.phyous.prism.util.DateHelper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static com.phyous.prism.util.DateHelper.getCurrentDateStartLong;
 
 public class GraderActivity extends ActionBarActivity {
@@ -41,19 +44,19 @@ public class GraderActivity extends ActionBarActivity {
 
         Bundle extras = getIntent().getExtras();
         long entryDate = extras == null ? 0L : extras.getLong(ENTRY_DATE, 0L);
-        String[] posTextArray;
-        String[] negTextArray;
-        String[] nextTextArray;
+        ArrayList<String> posTextArray;
+        ArrayList<String> negTextArray;
+        ArrayList<String> nextTextArray;
         if (entryDate == 0) {
             mGraderTimeMillis = getCurrentDateStartLong();
-            posTextArray = new String[0];
-            negTextArray = new String[0];
-            nextTextArray = new String[0];
+            posTextArray = new ArrayList<String>();
+            negTextArray = new ArrayList<String>();
+            nextTextArray = new ArrayList<String>();
         } else {
             mGraderTimeMillis = entryDate;
-            posTextArray = extras.getStringArray(ENTRY_NEG_ARRAY);
-            negTextArray = extras.getStringArray(ENTRY_POS_ARRAY);
-            nextTextArray = extras.getStringArray(ENTRY_NEXT_ARRAY);
+            posTextArray = extras.getStringArrayList(ENTRY_NEG_ARRAY);
+            negTextArray = extras.getStringArrayList(ENTRY_POS_ARRAY);
+            nextTextArray = extras.getStringArrayList(ENTRY_NEXT_ARRAY);
         }
 
         if (savedInstanceState != null) {
@@ -93,9 +96,9 @@ public class GraderActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GraderActivity.this, TimelineActivity.class);
-                String[] posFeedback = getFeedbackFromFragment(mPosFragment);
-                String[] negFeedback = getFeedbackFromFragment(mNegFragment);
-                String[] nextFeedback = getFeedbackFromFragment(mNextFragment);
+                ArrayList<String> posFeedback = getFeedbackFromFragment(mPosFragment);
+                ArrayList<String> negFeedback = getFeedbackFromFragment(mNegFragment);
+                ArrayList<String> nextFeedback = getFeedbackFromFragment(mNextFragment);
                 intent.putExtra(ENTRY_POS_ARRAY, posFeedback);
                 intent.putExtra(ENTRY_NEG_ARRAY, negFeedback);
                 intent.putExtra(ENTRY_NEXT_ARRAY, nextFeedback);
@@ -109,10 +112,11 @@ public class GraderActivity extends ActionBarActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
-    private String[] getFeedbackFromFragment(GraderCardFragment fragment) {
+    private ArrayList<String> getFeedbackFromFragment(GraderCardFragment fragment) {
         EditText editText = (EditText) fragment.getView().findViewById(R.id.text_entry);
         String rawFeedbackText = editText.getText().toString();
-        String[] splits = rawFeedbackText.split("\n");
+        ArrayList<String> splits = new ArrayList<String>(
+                Arrays.asList(rawFeedbackText.split("\n")));
         return splits;
     }
 }

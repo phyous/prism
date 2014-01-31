@@ -1,20 +1,29 @@
 package com.phyous.prism.provider;
 
+import java.util.ArrayList;
+
 public class Entry {
     private long mId;
     private long mDate;
-    private String[] mPositives;
-    private String[] mNegatives;
-    private String[] mNext;
+    private ArrayList<String> mPositives;
+    private ArrayList<String> mNegatives;
+    private ArrayList<String> mNext;
 
-    public Entry(long date, String[] negatives, String[] positives, String[] next) {
+    public Entry(long date,
+            ArrayList<String> negatives,
+            ArrayList<String> positives,
+            ArrayList<String> next) {
         mDate = date;
         mPositives = positives;
         mNegatives = negatives;
         mNext = next;
     }
 
-    public Entry(long date, String[] negatives, String[] positives, String[] next, long id) {
+    public Entry(long date,
+            ArrayList<String> negatives,
+            ArrayList<String> positives,
+            ArrayList<String> next,
+            long id) {
         this(date, negatives, positives, next);
         mId = id;
     }
@@ -31,15 +40,15 @@ public class Entry {
         return mDate;
     }
 
-    public String[] getPositives() {
+    public ArrayList<String> getPositives() {
         return mPositives;
     }
 
-    public String[] getNegatives() {
+    public ArrayList<String> getNegatives() {
         return mNegatives;
     }
 
-    public String[] getNext() {
+    public ArrayList<String> getNext() {
         return mNext;
     }
 }

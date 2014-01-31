@@ -4,13 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-/**
- * Created by pyoussef on 12/22/13.
- */
 public class EntryDataSource {
     private Context mContext;
     private final String[] entryAllColumns = {
@@ -113,9 +111,9 @@ public class EntryDataSource {
     private Entry cursorToEntry(Cursor cursor, boolean deepRetrieval) {
         long id = cursor.getLong(0);
         long date = cursor.getLong(1);
-        String[] negatives = null;
-        String[] positives = null;
-        String[] next = null;
+        ArrayList<String> negatives = null;
+        ArrayList<String> positives = null;
+        ArrayList<String> next = null;
 
         if (deepRetrieval) {
             negatives = getFeedback(0, id);
@@ -125,7 +123,7 @@ public class EntryDataSource {
         return new Entry(date, negatives, positives, next, id);
     }
 
-    private String[] getFeedback(long type, long entryId) {
+    private ArrayList<String> getFeedback(long type, long entryId) {
         ArrayList<String> feedbacks = new ArrayList<String>();
 
         final String selection = "entry_id=? AND feedback_type=?";
@@ -149,7 +147,7 @@ public class EntryDataSource {
 
         String[] feedbacksArr = new String[feedbacks.size()];
         feedbacksArr = feedbacks.toArray(feedbacksArr);
-        return feedbacksArr;
+        return new ArrayList<String>(Arrays.asList(feedbacksArr));
     }
 
     /**
@@ -159,7 +157,7 @@ public class EntryDataSource {
      * @param entryId the entry to associate this feedback with
      * @param values  entry values to be added (in plain text)
      */
-    private void createFeedbackValues(long type, long entryId, String[] values) {
+    private void createFeedbackValues(long type, long entryId, List<String> values) {
         for (String feedback : values) {
             ContentValues feedbackValues = new ContentValues();
             feedbackValues.put(PrismContract.Feedback.COLUMN_NAME_FEEDBACK_ENTRY_ID, entryId);
@@ -194,7 +192,7 @@ public class EntryDataSource {
         cursor.close();
     }
 
-    private void updateFeedbackValues(long type, long entryId, String[] values) {
+    private void updateFeedbackValues(long type, long entryId, List<String> values) {
         deleteFeedbackValues(type, entryId);
         createFeedbackValues(type, entryId, values);
     }

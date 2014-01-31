@@ -16,6 +16,7 @@ import com.phyous.prism.provider.Entry;
 import com.phyous.prism.provider.EntryDataSource;
 import com.phyous.prism.service.ScheduleClient;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class TimelineActivity extends ActionBarActivity {
@@ -102,9 +103,12 @@ public class TimelineActivity extends ActionBarActivity {
         if (requestCode == NEW_ENTRY_REQUEST_CODE && resultCode == GraderActivity.RESULT_OK) {
             Bundle bundle = data.getExtras();
             final long date = bundle.getLong(GraderActivity.ENTRY_DATE);
-            final String[] negEntries = bundle.getStringArray(GraderActivity.ENTRY_NEG_ARRAY);
-            final String[] posEntries = bundle.getStringArray(GraderActivity.ENTRY_POS_ARRAY);
-            final String[] nextEntries = bundle.getStringArray(GraderActivity.ENTRY_NEXT_ARRAY);
+            final ArrayList<String> negEntries =
+                    bundle.getStringArrayList(GraderActivity.ENTRY_NEG_ARRAY);
+            final ArrayList<String> posEntries =
+                    bundle.getStringArrayList(GraderActivity.ENTRY_POS_ARRAY);
+            final ArrayList<String> nextEntries =
+                    bundle.getStringArrayList(GraderActivity.ENTRY_NEXT_ARRAY);
             final Entry entry = new Entry(date, negEntries, posEntries, nextEntries);
 
             mEntryDataSource.createOrUpdateEntry(entry);
