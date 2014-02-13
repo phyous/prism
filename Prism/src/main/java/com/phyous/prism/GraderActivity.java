@@ -6,14 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.phyous.prism.util.DateHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static com.phyous.prism.util.DateHelper.getCurrentDateStartLong;
 
@@ -113,10 +111,6 @@ public class GraderActivity extends ActionBarActivity {
     }
 
     private ArrayList<String> getFeedbackFromFragment(GraderCardFragment fragment) {
-        EditText editText = (EditText) fragment.getView().findViewById(R.id.text_entry);
-        String rawFeedbackText = editText.getText().toString();
-        ArrayList<String> splits = new ArrayList<String>(
-                Arrays.asList(rawFeedbackText.split("\n")));
-        return splits;
+        return fragment.getTextEntries();
     }
 }

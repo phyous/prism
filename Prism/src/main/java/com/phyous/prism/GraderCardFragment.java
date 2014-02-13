@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class GraderCardFragment extends Fragment {
     private String mTitle;
-    private ArrayList<String> mInitialText;
+    private ArrayList<String> mTextEntries;
     private int mColor;
     private LinearLayout mLinearLayout;
 
@@ -28,11 +28,20 @@ public class GraderCardFragment extends Fragment {
     private static final String INITIAL_TEXT_INDEX = "initial_text_index";
     private static final String COLOR_INDEX = "color_index";
 
+    public GraderCardFragment() {
+        mTitle = null;
+        mTextEntries = null;
+        mColor = 1;
+    }
 
-    public GraderCardFragment(String title, ArrayList<String> initialText, int color) {
+    public GraderCardFragment(String title, ArrayList<String> textEntries, int color) {
         mTitle = title;
-        mInitialText = initialText;
+        mTextEntries = textEntries;
         mColor = color;
+    }
+
+    public ArrayList<String> getTextEntries() {
+        return mTextEntries;
     }
 
     @Override
@@ -40,7 +49,7 @@ public class GraderCardFragment extends Fragment {
             Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             mTitle = savedInstanceState.getString(TITLE_INDEX);
-            mInitialText = savedInstanceState.getStringArrayList(INITIAL_TEXT_INDEX);
+            mTextEntries = savedInstanceState.getStringArrayList(INITIAL_TEXT_INDEX);
             mColor = savedInstanceState.getInt(COLOR_INDEX);
         }
 
@@ -91,7 +100,7 @@ public class GraderCardFragment extends Fragment {
      * @param position where to create the row in the LinearLayout. If position >= getFilledCells()
      *                 we will lighten the drawer icon to the left of the EditText field.
      */
-    private void createListRow(int position) {
+    private void createListRow(final int position) {
         ViewGroup parent = mLinearLayout;
         LayoutInflater inflater = (LayoutInflater) getActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -100,29 +109,38 @@ public class GraderCardFragment extends Fragment {
         TextView textView = (TextView) rowView.findViewById(R.id.text_entry);
         ImageView image = (ImageView) rowView.findViewById(R.id.list_nub);
 
+        PositionalTextWatcher tw;
         if (position >= getFilledCells()) {
+            tw = createTextWatcher(true, rowView);
             image.setImageResource(R.drawable.ic_drawer_light);
-            textView.addTextChangedListener(new PositionalTextWatcher(rowView) {
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (s.length() > 0 && !getChangedState()) {
-                        setChangedState(true);
-                        addTextEntryRow();
-                        mInitialText.add(s.toString());
-                        darkenFilledCell();
-                    } else if (s.length() == 0 && getChangedState()) {
-                        deleteTextEntryRow(getParentRow());
-                    } else {
-                        mInitialText.set(mInitialText.size()-1, s.toString());
-                    }
-                }
-            });
         } else {
-            String text = mInitialText.get(position);
+            tw = createTextWatcher(false, rowView);
+            String text = mTextEntries.get(position);
             textView.setText(text);
             image.setImageResource(R.drawable.ic_drawer_dark);
         }
+
+        textView.addTextChangedListener(tw);
+
         parent.addView(rowView);
+    }
+
+    private PositionalTextWatcher createTextWatcher(final boolean forEmptyCell, View rowView) {
+        return new PositionalTextWatcher(rowView) {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0 && !getChangedState() && forEmptyCell) {
+                    setChangedState(true);
+                    addTextEntryRow();
+                    mTextEntries.add(s.toString());
+                    darkenFilledCell();
+                } else if (s.length() == 0 && getChangedState()) {
+                    deleteTextEntryRow(getParentRow());
+                } else {
+                    mTextEntries.set(mTextEntries.size()-1, s.toString());
+                }
+            }
+        };
     }
 
     /**
@@ -130,7 +148,7 @@ public class GraderCardFragment extends Fragment {
      * @return number of cells
      */
     private int getFilledCells() {
-        return mInitialText.size();
+        return mTextEntries.size();
     }
 
     /**
@@ -138,14 +156,14 @@ public class GraderCardFragment extends Fragment {
      * @return number of cells
      */
     private int getAllCells() {
-        return mInitialText.size() + 1;
+        return mTextEntries.size() + 1;
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString(TITLE_INDEX, mTitle);
-        savedInstanceState.putStringArrayList(INITIAL_TEXT_INDEX, mInitialText);
+        savedInstanceState.putStringArrayList(INITIAL_TEXT_INDEX, mTextEntries);
         savedInstanceState.putInt(COLOR_INDEX, mColor);
     }
 }
