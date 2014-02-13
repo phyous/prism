@@ -3,7 +3,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/grader_card"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingTop="@dimen/card_vertical_margin"
                 android:paddingBottom="@dimen/card_vertical_margin"
                 android:background="@color/background_grey"
@@ -12,12 +12,12 @@
     <RelativeLayout
             android:id="@+id/inner_box"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/card_border">
 
         <com.phyous.prism.widget.TypefacedTextView
                 android:id="@+id/title"
-                android:text="Title Text"
+                android:text="@string/title_text_fragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
@@ -39,11 +39,12 @@
                 android:background="@color/dark_grey"
                 />
 
-        <ListView
+        <LinearLayout
                 android:id="@+id/text_entry_list"
                 android:layout_below="@+id/div_bar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
 
     </RelativeLayout>
 

@@ -9,4 +9,7 @@
     <string name="praise_title">Praise</string>
     <string name="improve_title">Improve</string>
     <string name="focus_title">Focus</string>
+    <string name="date_text">Date Text</string>
+    <string name="description_commit_feedback">Commit Feedback</string>
+    <string name="title_text_fragment">Title Text</string>
 </resources>
