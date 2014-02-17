@@ -11,7 +11,7 @@ public abstract class PositionalTextWatcher implements TextWatcher{
         mRow = row;
     }
 
-    public View getParentRow() {
+    public View getRowView() {
         return mRow;
     }
 

@@ -23,6 +23,7 @@ public class GraderCardFragment extends Fragment {
     private ArrayList<String> mTextEntries;
     private int mColor;
     private LinearLayout mLinearLayout;
+    private boolean mInitialized = false;
 
     private static final String TITLE_INDEX = "title_index";
     private static final String INITIAL_TEXT_INDEX = "initial_text_index";
@@ -58,7 +59,6 @@ public class GraderCardFragment extends Fragment {
         tv.setText(mTitle);
 
         mLinearLayout = (LinearLayout) rootView.findViewById(R.id.text_entry_list);
-        initializeTextEntryList();
 
         RelativeLayout innerBox = (RelativeLayout) rootView.findViewById(R.id.inner_box);
         GradientDrawable layoutBG = (GradientDrawable) innerBox.getBackground();
@@ -67,22 +67,53 @@ public class GraderCardFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        /*
+        TODO: This piece of code is hacky. It should be replaced. A couple of things going on here:
+        1- On screen rotation, the textwatcher of the edittext boxes are being hit improperly.
+           mInitialized avoid this.
+        2- initializeTextEntryList() populates the views after everything
+           is initialized to ensure data is kept between rotations.
+         */
+        if (!mInitialized) {
+            mInitialized = true;
+            initializeTextEntryList();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString(TITLE_INDEX, mTitle);
+        savedInstanceState.putStringArrayList(INITIAL_TEXT_INDEX, mTextEntries);
+        savedInstanceState.putInt(COLOR_INDEX, mColor);
+    }
+
     private void initializeTextEntryList() {
         for (int i = 0; i < getAllCells(); i++) {
             createListRow(i);
         }
     }
 
-    private void addTextEntryRow() {
+    private void createTextEntryRow() {
         createListRow(getFilledCells());
     }
 
-    private void deleteTextEntryRow(View row) {
-        int cursorPos = mLinearLayout.indexOfChild(row) - 1;
-        mLinearLayout.removeView(row);
+    private void updateTextEntryRow(View row, Editable s) {
+        int childPos = mLinearLayout.indexOfChild(row);
+        mTextEntries.set(childPos, s.toString());
+    }
 
-        if(cursorPos >= 0) {
-            View rowView = mLinearLayout.getChildAt(cursorPos);
+    private void deleteTextEntryRow(View row) {
+        int childPos = mLinearLayout.indexOfChild(row);
+        mLinearLayout.removeView(row);
+        mTextEntries.remove(childPos);
+
+        int previousChild = childPos - 1;
+        if (previousChild >= 0) {
+            View rowView = mLinearLayout.getChildAt(previousChild);
             TextView textView = (TextView) rowView.findViewById(R.id.text_entry);
             textView.requestFocus();
         }
@@ -129,15 +160,17 @@ public class GraderCardFragment extends Fragment {
         return new PositionalTextWatcher(rowView) {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 0 && !getChangedState() && forEmptyCell) {
-                    setChangedState(true);
-                    addTextEntryRow();
-                    mTextEntries.add(s.toString());
-                    darkenFilledCell();
-                } else if (s.length() == 0 && getChangedState()) {
-                    deleteTextEntryRow(getParentRow());
-                } else {
-                    mTextEntries.set(mTextEntries.size()-1, s.toString());
+                if (mInitialized) {
+                    if (s.length() > 0 && !getChangedState() && forEmptyCell) {
+                        setChangedState(true);
+                        createTextEntryRow();
+                        mTextEntries.add(s.toString());
+                        darkenFilledCell();
+                    } else if (s.length() == 0) {
+                        deleteTextEntryRow(getRowView());
+                    } else {
+                        updateTextEntryRow(getRowView(), s);
+                    }
                 }
             }
         };
@@ -157,13 +190,5 @@ public class GraderCardFragment extends Fragment {
      */
     private int getAllCells() {
         return mTextEntries.size() + 1;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString(TITLE_INDEX, mTitle);
-        savedInstanceState.putStringArrayList(INITIAL_TEXT_INDEX, mTextEntries);
-        savedInstanceState.putInt(COLOR_INDEX, mColor);
     }
 }

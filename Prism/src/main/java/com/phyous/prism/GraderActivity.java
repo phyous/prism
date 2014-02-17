@@ -42,9 +42,7 @@ public class GraderActivity extends ActionBarActivity {
 
         Bundle extras = getIntent().getExtras();
         long entryDate = extras == null ? 0L : extras.getLong(ENTRY_DATE, 0L);
-        ArrayList<String> posTextArray;
-        ArrayList<String> negTextArray;
-        ArrayList<String> nextTextArray;
+        ArrayList<String> posTextArray, negTextArray, nextTextArray;
         if (entryDate == 0) {
             mGraderTimeMillis = getCurrentDateStartLong();
             posTextArray = new ArrayList<String>();
