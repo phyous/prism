@@ -22,6 +22,7 @@ public class GraderCardFragment extends Fragment {
     private String mTitle;
     private ArrayList<String> mTextEntries;
     private int mColor;
+    private String mHintText;
     private LinearLayout mLinearLayout;
     private boolean mInitialized = false;
 
@@ -33,12 +34,17 @@ public class GraderCardFragment extends Fragment {
         mTitle = null;
         mTextEntries = null;
         mColor = 1;
+        mHintText = "";
     }
 
-    public GraderCardFragment(String title, ArrayList<String> textEntries, int color) {
+    public GraderCardFragment(String title,
+            ArrayList<String> textEntries,
+            int color,
+            String hintText) {
         mTitle = title;
         mTextEntries = textEntries;
         mColor = color;
+        mHintText = hintText;
     }
 
     public ArrayList<String> getTextEntries() {
@@ -144,6 +150,9 @@ public class GraderCardFragment extends Fragment {
         if (position >= getFilledCells()) {
             tw = createTextWatcher(true, rowView);
             image.setImageResource(R.drawable.ic_drawer_light);
+            textView.setHint(mHintText);
+            int hintTextColor = getResources().getColor(R.color.hint_text_grey);
+            textView.setHintTextColor(hintTextColor);
         } else {
             tw = createTextWatcher(false, rowView);
             String text = mTextEntries.get(position);

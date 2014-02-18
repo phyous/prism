@@ -12,4 +12,10 @@
     <string name="date_text">Date Text</string>
     <string name="description_commit_feedback">Commit Feedback</string>
     <string name="title_text_fragment">Title Text</string>
+    <string name="nux_title">Welcome to Prism</string>
+    <string name="nux_description">Prism is an app focused on daily improvement and personal accountability.\nDo better in your work &amp; personal life by building a habit of self-reflection.</string>
+    <string name="nux_tag">nux_tag</string>
+    <string name="praise_hint">What did you do well?</string>
+    <string name="improve_hint">What do you want to improve?</string>
+    <string name="focus_hint">3 things to focus on tomorrow</string>
 </resources>

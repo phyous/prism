@@ -14,7 +14,7 @@ import com.phyous.prism.provider.EntryDataSource;
 import static com.phyous.prism.util.DateHelper.getDateTitle;
 
 public class EntryListAdapter extends CursorAdapter {
-    private final int STRING_SUMMARY_LENGTH = 18;
+    private final int STRING_SUMMARY_LENGTH = 36;
     private EntryDataSource mEntryDataSource;
     public EntryListAdapter(Context context, Cursor c) {
         super(context, c);
@@ -45,7 +45,7 @@ public class EntryListAdapter extends CursorAdapter {
 
     private String createSummary(Entry entry) {
         StringBuilder sb = new StringBuilder();
-        for(String s: entry.getNegatives()) {
+        for(String s: entry.getPositives()) {
             sb.append(s);
             sb.append(", ");
         }

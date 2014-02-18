@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.phyous.prism.provider.Entry;
@@ -26,6 +27,9 @@ public class TimelineActivity extends ActionBarActivity {
     private ScheduleClient scheduleClient;
     private static final int NEW_ENTRY_REQUEST_CODE = 1;
 
+    // If user has less than NUX_ENTRY_MIN, show new user experience
+    private static final int NUX_ENTRY_MIN = 4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +44,7 @@ public class TimelineActivity extends ActionBarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Move somewhere appropriate. App initialization?
-                setupAlarm();
-                Intent intent = new Intent(TimelineActivity.this, GraderActivity.class);
-                startActivityForResult(intent, NEW_ENTRY_REQUEST_CODE);
+                startGrader();
             }
         });
 
@@ -59,6 +60,9 @@ public class TimelineActivity extends ActionBarActivity {
                     int position, long id) {
                 Intent intent = new Intent(TimelineActivity.this, GraderActivity.class);
                 final Entry entry = mEntryDataSource.getEntryById(id);
+                if (entry == null) {
+                    return;
+                }
                 intent.putExtra(GraderActivity.ENTRY_DATE, entry.getDate());
                 intent.putExtra(GraderActivity.ENTRY_POS_ARRAY, entry.getNegatives());
                 intent.putExtra(GraderActivity.ENTRY_NEG_ARRAY, entry.getPositives());
@@ -67,6 +71,19 @@ public class TimelineActivity extends ActionBarActivity {
                 startActivityForResult(intent, NEW_ENTRY_REQUEST_CODE);
             }
         });
+    }
+
+    private void addNewUserExperience() {
+        LinearLayout header =
+                (LinearLayout) getLayoutInflater().inflate(R.layout.timeline_nux_header, null);
+        mListView.addHeaderView(header);
+    }
+
+    private void startGrader() {
+        // TODO: Move setupAlarm call somewhere appropriate. App initialization?
+        setupAlarm();
+        Intent intent = new Intent(TimelineActivity.this, GraderActivity.class);
+        startActivityForResult(intent, NEW_ENTRY_REQUEST_CODE);
     }
 
     private void updateData() {
@@ -78,6 +95,10 @@ public class TimelineActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(Cursor result) {
+                if(result.getCount() < NUX_ENTRY_MIN && mListView.getHeaderViewsCount() == 0) {
+                    addNewUserExperience();
+                }
+
                 if (mEntryListAdapter == null) {
                     mEntryListAdapter = new EntryListAdapter(TimelineActivity.this, result);
                     mListView.setAdapter(mEntryListAdapter);
@@ -132,6 +153,7 @@ public class TimelineActivity extends ActionBarActivity {
     }
 
     public void setupAlarm() {
+        // TODO: Add user settings to control when alarm goes off (or if it goes off at all)
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, 22);
         c.set(Calendar.MINUTE, 0);
