@@ -5,9 +5,11 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -144,6 +146,9 @@ public class GraderCardFragment extends Fragment {
         View rowView = inflater.inflate(R.layout.grader_row_item, parent, false);
 
         TextView textView = (TextView) rowView.findViewById(R.id.text_entry);
+        textView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES |
+                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        textView.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         ImageView image = (ImageView) rowView.findViewById(R.id.list_nub);
 
         PositionalTextWatcher tw;
