@@ -13,16 +13,13 @@ import android.widget.ListView;
 
 import com.phyous.prism.provider.Entry;
 import com.phyous.prism.provider.EntryDataSource;
-import com.phyous.prism.service.ScheduleClient;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class TimelineActivity extends ActionBarActivity {
     private EntryDataSource mEntryDataSource;
     private EntryListAdapter mEntryListAdapter;
     private ListView mListView;
-    private ScheduleClient scheduleClient;
     private static final int NEW_ENTRY_REQUEST_CODE = 1;
 
     // If user has less than NUX_ENTRY_MIN, show new user experience
@@ -32,10 +29,6 @@ public class TimelineActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-
-        // Create a new service client and bind our activity to this service
-        scheduleClient = new ScheduleClient(this);
-        scheduleClient.doBindService();
 
         // Set data for ListView
         mListView = (ListView) findViewById(R.id.listview);
@@ -68,7 +61,6 @@ public class TimelineActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(TimelineActivity.this, GraderActivity.class);
                 startActivityForResult(intent, TimelineActivity.NEW_ENTRY_REQUEST_CODE);
-                setupAlarm();
             }
         });
 
@@ -112,14 +104,6 @@ public class TimelineActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onStop() {
-        if (scheduleClient != null) {
-            scheduleClient.doUnbindService();
-        }
-        super.onStop();
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -137,15 +121,5 @@ public class TimelineActivity extends ActionBarActivity {
             mEntryDataSource.createOrUpdateEntry(entry);
             updateData();
         }
-    }
-
-    public void setupAlarm() {
-        // TODO: Add user settings to control when alarm goes off (or if it goes off at all)
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 22);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-
-        scheduleClient.setAlarmForNotification(c);
     }
 }

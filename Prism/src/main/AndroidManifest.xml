@@ -33,7 +33,7 @@
                 android:name="com.phyous.prism.SettingsActivity"
                 android:label="@string/title_activity_settings" >
         </activity>
-        <service android:name=".service.ScheduleService" />
+        <service android:name=".service.ReminderService" />
         <service android:name=".service.NotifyService" />
     </application>
 

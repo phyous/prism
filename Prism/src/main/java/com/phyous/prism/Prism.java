@@ -1,9 +1,11 @@
 package com.phyous.prism;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.res.Configuration;
 
 import com.phyous.prism.provider.PrismDbHelper;
+import com.phyous.prism.service.ReminderService;
 
 public class Prism extends Application {
 
@@ -18,6 +20,9 @@ public class Prism extends Application {
 
         // Initialize database
         PrismDbHelper.getDb(this);
+
+        // Initialize Reminder Service
+        startService(new Intent(this, ReminderService.class));
     }
 
     @Override

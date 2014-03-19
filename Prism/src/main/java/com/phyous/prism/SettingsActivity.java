@@ -1,6 +1,7 @@
 package com.phyous.prism;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -8,14 +9,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TimePicker;
 
-import com.phyous.prism.service.ScheduleClient;
-
-import java.util.Calendar;
+import com.phyous.prism.service.ReminderService;
 
 public class SettingsActivity extends Activity {
     private CheckBox mCheckBox;
     private TimePicker mTimePicker;
-    private ScheduleClient mScheduleClient;
     private static final String PREFS_NAME = "PrisimPrefs";
     private static final String PREF_REMINDER_CHECKBOX = "reminderCheckbox";
     private static final String PREF_REMINDER_HOUR = "reminderhour";
@@ -29,9 +27,6 @@ public class SettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
-        mScheduleClient = new ScheduleClient(getApplicationContext());
-        mScheduleClient.doBindService();
 
         mCheckBox = (CheckBox) findViewById(R.id.reminder_checkbox);
         mTimePicker = (TimePicker) findViewById(R.id.time_picker);
@@ -58,12 +53,12 @@ public class SettingsActivity extends Activity {
                 savePreferences();
 
                 if (mCheckBox.isChecked()) {
-                    Calendar c = Calendar.getInstance();
-                    c.set(Calendar.HOUR_OF_DAY, mTimePicker.getCurrentHour());
-                    c.set(Calendar.MINUTE, mTimePicker.getCurrentMinute());
-                    c.set(Calendar.SECOND, 0);
+                    Intent intent = new Intent(getApplicationContext(), ReminderService.class);
+                    intent.putExtra(ReminderService.HOUR_EXTRA, mTimePicker.getCurrentHour());
+                    intent.putExtra(ReminderService.MINUTE_EXTRA, mTimePicker.getCurrentMinute());
+                    intent.putExtra(ReminderService.SECOND_EXTRA, 0);
 
-                    mScheduleClient.setAlarmForNotification(c);
+                    startService(intent);
                 }
 
                 finish();
@@ -87,13 +82,5 @@ public class SettingsActivity extends Activity {
         outState.putBoolean(PREF_REMINDER_CHECKBOX, mCheckBox.isChecked());
         outState.putInt(PREF_REMINDER_HOUR, mTimePicker.getCurrentHour());
         outState.putInt(PREF_REMINDER_MINUTE, mTimePicker.getCurrentMinute());
-    }
-
-    @Override
-    protected void onStop() {
-        if (mScheduleClient != null) {
-            mScheduleClient.doUnbindService();
-        }
-        super.onStop();
     }
 }
