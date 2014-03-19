@@ -3,10 +3,8 @@ package com.phyous.prism;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -39,15 +37,6 @@ public class TimelineActivity extends ActionBarActivity {
         scheduleClient = new ScheduleClient(this);
         scheduleClient.doBindService();
 
-        // Enable creating new entries
-        final ImageView button = (ImageView) findViewById(R.id.plus_icon);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startGrader();
-            }
-        });
-
         // Set data for ListView
         mListView = (ListView) findViewById(R.id.listview);
         mEntryDataSource = new EntryDataSource(this);
@@ -71,19 +60,32 @@ public class TimelineActivity extends ActionBarActivity {
                 startActivityForResult(intent, NEW_ENTRY_REQUEST_CODE);
             }
         });
+
+        // Enable creating new entries
+        final ImageView button = (ImageView) findViewById(R.id.plus_icon);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TimelineActivity.this, GraderActivity.class);
+                startActivityForResult(intent, TimelineActivity.NEW_ENTRY_REQUEST_CODE);
+                setupAlarm();
+            }
+        });
+
+        // Enable settings menu access
+        final ImageView settings = (ImageView) findViewById(R.id.settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(TimelineActivity.this, SettingsActivity.class));
+            }
+        });
     }
 
     private void addNewUserExperience() {
         LinearLayout header =
                 (LinearLayout) getLayoutInflater().inflate(R.layout.timeline_nux_header, null);
         mListView.addHeaderView(header);
-    }
-
-    private void startGrader() {
-        // TODO: Move setupAlarm call somewhere appropriate. App initialization?
-        setupAlarm();
-        Intent intent = new Intent(TimelineActivity.this, GraderActivity.class);
-        startActivityForResult(intent, NEW_ENTRY_REQUEST_CODE);
     }
 
     private void updateData() {
@@ -135,21 +137,6 @@ public class TimelineActivity extends ActionBarActivity {
             mEntryDataSource.createOrUpdateEntry(entry);
             updateData();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.timeline, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public void setupAlarm() {

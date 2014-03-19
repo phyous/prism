@@ -12,6 +12,7 @@ public class ScheduleClient {
     private ScheduleService mBoundService;
     private Context mContext;
     private boolean mIsBound;
+    private Calendar mCalendarDate;
 
     public ScheduleClient(Context context) {
         mContext = context;
@@ -27,6 +28,9 @@ public class ScheduleClient {
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mBoundService = ((ScheduleService.ServiceBinder) service).getService();
+            if (mCalendarDate != null) {
+                setAlarmForNotification(mCalendarDate);
+            }
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -35,7 +39,10 @@ public class ScheduleClient {
     };
 
     public void setAlarmForNotification(Calendar c) {
-        mBoundService.setAlarm(c);
+        mCalendarDate = c;
+        if (mBoundService != null) {
+            mBoundService.setAlarm(c);
+        }
     }
 
     public void doUnbindService() {

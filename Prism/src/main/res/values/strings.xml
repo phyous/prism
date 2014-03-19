@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_timeline">TimelineActivity</string>
     <string name="title_activity_grader">GraderActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_text">Prism</string>
     <string name="praise_title">Praise</string>
     <string name="improve_title">Improve</string>
@@ -18,4 +19,9 @@
     <string name="praise_hint">What did you do well?</string>
     <string name="improve_hint">What do you want to improve?</string>
     <string name="focus_hint">3 things to focus on tomorrow</string>
+    <string name="reminder_description">If enabled, you\'ll get a reminder every day at this time to grade yourself. Grading at the end of your day is recommended.</string>
+    <string name="enable_checkbox_text">Enable Prism reminders?</string>
+    <string name="done">Done</string>
+    <string name="settings_menu_content_description">Settings menu</string>
+    <string name="grade_yourself_content_description">Grade yourself</string>
 </resources>
