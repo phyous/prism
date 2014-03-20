@@ -14,14 +14,14 @@ import com.phyous.prism.service.ReminderService;
 public class SettingsActivity extends Activity {
     private CheckBox mCheckBox;
     private TimePicker mTimePicker;
-    private static final String PREFS_NAME = "PrisimPrefs";
-    private static final String PREF_REMINDER_CHECKBOX = "reminderCheckbox";
-    private static final String PREF_REMINDER_HOUR = "reminderhour";
-    private static final String PREF_REMINDER_MINUTE = "reminderMinute";
+    public static final String PREFS_NAME = "PrisimPrefs";
+    public static final String PREF_REMINDER_CHECKBOX = "reminderCheckbox";
+    public static final String PREF_REMINDER_HOUR = "reminderhour";
+    public static final String PREF_REMINDER_MINUTE = "reminderMinute";
 
-    private static final boolean REMINDER_CHECKBOX_DEFAULT = true;
-    private static final int REMINDER_HOUR_DEFAULT = 22;
-    private static final int REMINDER_MINUTE_DEFAULT = 0;
+    public static final boolean REMINDER_CHECKBOX_DEFAULT = true;
+    public static final int REMINDER_HOUR_DEFAULT = 22;
+    public static final int REMINDER_MINUTE_DEFAULT = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,16 +49,10 @@ public class SettingsActivity extends Activity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Save preferences
                 savePreferences();
 
                 if (mCheckBox.isChecked()) {
-                    Intent intent = new Intent(getApplicationContext(), ReminderService.class);
-                    intent.putExtra(ReminderService.HOUR_EXTRA, mTimePicker.getCurrentHour());
-                    intent.putExtra(ReminderService.MINUTE_EXTRA, mTimePicker.getCurrentMinute());
-                    intent.putExtra(ReminderService.SECOND_EXTRA, 0);
-
-                    startService(intent);
+                    startService(new Intent(getApplicationContext(), ReminderService.class));
                 }
 
                 finish();

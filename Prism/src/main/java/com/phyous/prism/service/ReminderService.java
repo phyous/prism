@@ -2,19 +2,16 @@ package com.phyous.prism.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.widget.Toast;
+import android.util.Log;
+
+import com.phyous.prism.SettingsActivity;
 
 import java.util.Calendar;
 
 public class ReminderService extends Service {
-    public static String HOUR_EXTRA = "hour_extra";
-    public static String MINUTE_EXTRA = "minute_extra";
-    public static String SECOND_EXTRA = "second_extra";
-
-    private static final int DEFAULT_HOUR = 20;
-    private static final int DEFAULT_MINUTE = 30;
-    private static final int DEFAULT_SECOND = 0;
+    private final String TAG = this.getClass().getName();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -22,24 +19,32 @@ public class ReminderService extends Service {
     }
 
     @Override
-    public void onCreate() {
-        Toast.makeText(this, "ReminderService created", Toast.LENGTH_LONG).show();
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        SharedPreferences settings = this.getSharedPreferences(SettingsActivity.PREFS_NAME, 0);
+        int hour = settings.getInt(
+                SettingsActivity.PREF_REMINDER_HOUR,
+                SettingsActivity.REMINDER_HOUR_DEFAULT);
+        int minute = settings.getInt(
+                SettingsActivity.PREF_REMINDER_MINUTE,
+                SettingsActivity.REMINDER_MINUTE_DEFAULT);
+        boolean notificationsEnabled = settings.getBoolean(
+                        SettingsActivity.PREF_REMINDER_CHECKBOX,
+                        SettingsActivity.REMINDER_CHECKBOX_DEFAULT);
+
+        if (notificationsEnabled) {
+            Log.d(TAG, String.format("Started Alarm for %d:%d", hour, minute));
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.HOUR_OF_DAY, hour);
+            c.set(Calendar.MINUTE, minute);
+            new AlarmTask(this, c).run();
+        }
+
+        return START_STICKY;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        int hour = intent.getIntExtra(HOUR_EXTRA, DEFAULT_HOUR);
-        int minute = intent.getIntExtra(MINUTE_EXTRA, DEFAULT_MINUTE);
-        int second = intent.getIntExtra(SECOND_EXTRA, DEFAULT_SECOND);
-
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, hour);
-        c.set(Calendar.MINUTE, minute);
-        c.set(Calendar.SECOND, second);
-        new AlarmTask(this, c).run();
-
-        // We want this service to continue running until it is explicitly
-        // stopped, so return sticky.
-        return START_STICKY;
+    public void onDestroy() {
+        Log.d(TAG, "Destroying ReminderService");
     }
+
 }
