@@ -148,7 +148,7 @@ public class GraderCardFragment extends Fragment {
         TextView textView = (TextView) rowView.findViewById(R.id.text_entry);
         textView.setInputType(InputType.TYPE_CLASS_TEXT|
                 InputType.TYPE_TEXT_FLAG_CAP_SENTENCES |
-                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         textView.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         ImageView image = (ImageView) rowView.findViewById(R.id.list_nub);
 
